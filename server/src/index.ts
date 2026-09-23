@@ -12,7 +12,11 @@ const PORT = config.port;
 async function connect(): Promise<string> {
   if (config.demoMode && !config.hasExternalMongo) {
     const { MongoMemoryServer } = await import('mongodb-memory-server');
-    const mem = await MongoMemoryServer.create();
+    // Render uses Debian 12, which only provides MongoDB binaries from 7.0.3
+    // onwards. Pin a compatible version for the throwaway demo database.
+    const mem = await MongoMemoryServer.create({
+      binary: { version: process.env.MONGOMS_VERSION || '7.0.3' },
+    });
     await mongoose.connect(mem.getUri('feedants'));
     return 'in-memory MongoDB (demo mode — data is not persisted)';
   }

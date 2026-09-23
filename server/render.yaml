@@ -3,8 +3,12 @@ services:
     name: feedants-competition
     env: node
     buildCommand: "cd ../mobile && npm install && npx expo export -p web && cd ../server && npm install && npm run build"
-    startCommand: "npm run demo"
+    startCommand: "node dist/demo.js"
     envVars:
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=1536"
+      - key: MONGOMS_VERSION
+        value: "7.0.3"
       - key: DEMO_MODE
         value: "true"
       # The frontend will hit the same origin since it's served by the backend
